@@ -5,6 +5,6 @@ RUN sed '/cdrom:\[CAElinux2020/ d' /etc/apt/sources.list.bak > /etc/apt/sources.
 RUN apt update
 RUN apt install tightvncserver
 RUN useradd caelinuxuser
-USER vncserver
+USER caelinuxuser
 
 CMD [ "/bin/bash" ]
