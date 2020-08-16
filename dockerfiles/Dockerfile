@@ -1,14 +1,15 @@
-FROM docker.pkg.github.com/open-mech-eng/caelinux-docker/2020:1.0.0
+FROM docker.pkg.github.com/open-mech-eng/docker-headless-vnc-container/ubuntu-xfce-vnc:1.0.0
 
-RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak 
-RUN sed '/cdrom:\[CAElinux2020/ d' /etc/apt/sources.list.bak > /etc/apt/sources.list
+# Switch to root user to install additional software
+USER 0
+
+# Enable PPAs
 RUN apt update
-RUN apt install --yes tightvncserver
+RUN apt -y install software-properties-common dirmngr apt-transport-https lsb-release ca-certificates
 
-RUN useradd caelinuxuser && mkdir /home/caelinuxuser
-RUN chown -R caelinuxuser:caelinuxuser /home/caelinuxuser
-USER caelinuxuser
-ENV USER=caelinuxuser
-
-WORKDIR /home/caelinuxuser
-CMD [ "/bin/bash" ]
+# Install FREECAD
+RUN add-apt-repository ppa:freecad-maintainers/freecad-stable
+RUN apt update
+RUN apt install --yes freecad
+## switch back to default user
+USER 1000
